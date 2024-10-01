@@ -1,0 +1,90 @@
+{
+  "project_info": {
+    "project_number": "885144684281",
+    "project_id": "ecli-14d4c",
+    "storage_bucket": "ecli-14d4c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:885144684281:android:5299d8a71a644793008428",
+        "android_client_info": {
+          "package_name": "br.com.ecli"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "885144684281-ms6ol0suc2s6sku8o5a3ejur2rm7pg73.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.ecli",
+            "certificate_hash": "51544566eac0378b8fff53725ffa754ae987ce04"
+          }
+        },
+        {
+          "client_id": "885144684281-73bqjj54t7rbvs9dmlktp7ne3670uimk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1uU2pMCQL7lTqJEyKPj-4zE8GTXzD7ew"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "885144684281-73bqjj54t7rbvs9dmlktp7ne3670uimk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "885144684281-46eilgql59ji85dt36124h1s1aq43rot.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "br.com.ecli"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:885144684281:android:9847059f52a0d1da008428",
+        "android_client_info": {
+          "package_name": "br.com.esigp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "885144684281-73bqjj54t7rbvs9dmlktp7ne3670uimk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1uU2pMCQL7lTqJEyKPj-4zE8GTXzD7ew"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "885144684281-73bqjj54t7rbvs9dmlktp7ne3670uimk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "885144684281-46eilgql59ji85dt36124h1s1aq43rot.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "br.com.ecli"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
