@@ -39,6 +39,13 @@ class _HomeScreenState extends State<HomeScreen> {
            date.weekday == DateTime.saturday;
   }
 
+  void _updateSelectedDate(String newDate) {
+    setState(() {
+      _selectedDate = newDate;
+    });
+    print(_selectedDate);
+  }
+
   String formatarData(String dataString)  {
     final dateTime = DateTime.parse(dataString);
  
@@ -54,6 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(_selectedDate); 
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
@@ -79,21 +87,31 @@ class _HomeScreenState extends State<HomeScreen> {
 
               SizedBox(
                 height: 130,
-                child: InfiniteDateTimeline(selectedDate: _selectedDate,)),
+                child: InfiniteDateTimeline(onDateSelected: _updateSelectedDate,)),
 
-              StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance.collection('appointments').snapshots(), 
+              FutureBuilder(
+                future: FirebaseFirestore.instance.collection('appointments').where('date', isEqualTo: _selectedDate).get(), 
                 builder: (ctx, snapshot) {
                   if(snapshot.hasError) {
                     return const Text('Erro ao carregar agendamentos');
                   }
 
                   if(snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
+                    return const Padding(
+                      padding: EdgeInsets.only(top: 16.0),
+                      child: Center(child: CircularProgressIndicator()),
+                    );
                   }
 
                   if(snapshot.hasData) {
                     var documents = snapshot.data!.docs;
+
+                    if (documents.length == 0) {
+                      return const Padding(
+                        padding: EdgeInsets.only(top: 16.0),
+                        child: Center(child: Text('Nenhum agendamento para esse dia')),
+                      );
+                    }
 
                     List<Widget> appointmentWidgets = [];
         

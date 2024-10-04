@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class InfiniteDateTimeline extends StatefulWidget {
-  String selectedDate;
+class InfiniteDateTimeline extends StatefulWidget { 
+  final Function(String) onDateSelected;
 
-  InfiniteDateTimeline({super.key, required this.selectedDate});
+  InfiniteDateTimeline({super.key, required this.onDateSelected});
 
   @override
   _InfiniteDateTimelineState createState() => _InfiniteDateTimelineState();
@@ -79,12 +79,8 @@ class _InfiniteDateTimelineState extends State<InfiniteDateTimeline> {
           String dayOfWeek = _getDayOfWeek(date.weekday);
       
           return InkWell(
-
             onTap: () {
-              setState(() {
-                widget.selectedDate = "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
-              });
-              print(widget.selectedDate);
+              widget.onDateSelected("${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}");
             },
             splashColor: Colors.grey[300],
             child: Card(
