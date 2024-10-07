@@ -22,15 +22,20 @@ class _InfiniteDateTimelineState extends State<InfiniteDateTimeline> {
   }
 
   void _loadInitialDates() {
-    DateTime today = DateTime.now();
-    for (int i = 0; i < 30; i++) {
-      DateTime dateToAdd = today.add(Duration(days: i));
-      if (_isValidDate(dateToAdd)) {
-        _dates.add(dateToAdd);
-      }
-    }
+  DateTime today = DateTime.now();
+
+  // Inclui a data de hoje se for válida
+  if (_isValidDate(today, allowToday: true)) {
+    _dates.add(today);
   }
 
+  for (int i = 1; i < 30; i++) {
+    DateTime dateToAdd = today.add(Duration(days: i));
+    if (_isValidDate(dateToAdd)) {
+      _dates.add(dateToAdd);
+    }
+  }
+}
   void _loadMoreDates() {
     if (_isLoading) return;
 
@@ -52,11 +57,13 @@ class _InfiniteDateTimelineState extends State<InfiniteDateTimeline> {
     });
   }
 
-  bool _isValidDate(DateTime date) {
-    // Permite apenas segundas (1) e quartas (3) e deve ser posterior a hoje
-    return date.isAfter(DateTime.now()) &&
-           (date.weekday == DateTime.monday || date.weekday == DateTime.wednesday);
-  }
+bool _isValidDate(DateTime date, {bool allowToday = false}) {
+  DateTime today = DateTime.now();
+  bool isAfterToday = allowToday ? !date.isBefore(today) : date.isAfter(today);
+  // Permite apenas segundas (1) e quartas (3)
+  return isAfterToday && 
+         (date.weekday == DateTime.monday || date.weekday == DateTime.wednesday);
+}
 
   void _scrollListener() {
     if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {

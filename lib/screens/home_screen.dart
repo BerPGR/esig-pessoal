@@ -43,7 +43,6 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _selectedDate = newDate;
     });
-    print(_selectedDate);
   }
 
   String formatarData(String dataString)  {
@@ -56,7 +55,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final dayOfWeek = DateFormat.EEEE('pt_BR').format(dateTime);
 
-    return '${dayOfWeek[0].toUpperCase()+dayOfWeek.substring(1)}, ${finaD.sublist(0, 3).join(" ")}';
+    return '${dayOfWeek[0].toUpperCase()+dayOfWeek.substring(1)}';
+  }
+
+  String formatarDataAgendamento(String dataString) {
+    final dateTime = DateTime.parse(dataString);
+ 
+    final formatter = DateFormat.yMMMMd('pt_BR');
+    final formattedDate = formatter.format(dateTime);
+    var finaD = formattedDate.split(" ");
+    finaD[2] = finaD[2][0].toUpperCase() + finaD[2].substring(1);
+
+    return 'Agendamentos de ${finaD.sublist(0, 3).join(" ")}';
   }
 
   @override
@@ -89,8 +99,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 130,
                 child: InfiniteDateTimeline(onDateSelected: _updateSelectedDate,)),
 
-              FutureBuilder(
-                future: FirebaseFirestore.instance.collection('appointments').where('date', isEqualTo: _selectedDate).get(), 
+              Padding(
+                padding: const EdgeInsets.only(top: 24.0),
+                child: Text(formatarDataAgendamento(_selectedDate), style: Styles.normalBold,),
+              ),
+
+              StreamBuilder(
+                stream: FirebaseFirestore.instance.collection('appointments').where('date', isEqualTo: _selectedDate).where('isAppointmentFinished', isEqualTo: false).snapshots(), 
                 builder: (ctx, snapshot) {
                   if(snapshot.hasError) {
                     return const Text('Erro ao carregar agendamentos');
@@ -147,7 +162,24 @@ class _HomeScreenState extends State<HomeScreen> {
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text(formatarData(detail['date']), style: Styles.normal.merge(TextStyle(fontSize: 16, fontWeight: FontWeight.w600))),
+                                          FutureBuilder<String>(
+                                            future: getAppointmentUser(detail['user_id']), // O Future que está sendo esperado
+                                            builder: (context, snapshot) {
+                                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                                return SizedBox(
+                                                  width: MediaQuery.of(ctx).size.width * 0.5,
+                                                  child: LinearProgressIndicator()
+                                                ); // Mostra um indicador de carregamento enquanto o Future está pendente
+
+                                              } else if (snapshot.hasError) {
+                                                return Text('Erro ao carregar o nome'); // Mostra uma mensagem de erro
+                                              } else if (snapshot.hasData) {
+                                                return Text(snapshot.data ?? '', style: Styles.normal.merge(TextStyle(fontSize: 16, fontWeight: FontWeight.w600))); // Exibe o nome do usuário
+                                              } else {
+                                                return Text('Nenhum dado disponível'); // Caso o Future não tenha dados
+                                              }
+                                            },
+                                          ),
                                           Text(detail['hour'], style: Styles.normal.merge(TextStyle(fontSize: 10, fontWeight: FontWeight.w100))),
                                           const Spacer(),
                                           Text("Agendamento", style: Styles.normal.merge(TextStyle(fontSize: 10, fontWeight: FontWeight.w300, color: Color(0xff797979))))
@@ -176,5 +208,15 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+  
+  Future<String> getAppointmentUser(String clientId) async {
+    DocumentSnapshot docRef = await FirebaseFirestore.instance.collection('users').doc(clientId).get();
+    if (docRef.exists) {
+      print(docRef.data());
+      Map<String, dynamic> data = docRef.data() as Map<String, dynamic>;
+      return data['name'];
+    }
+    return '';
   }
 }
