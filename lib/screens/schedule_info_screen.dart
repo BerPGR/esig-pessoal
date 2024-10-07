@@ -39,8 +39,8 @@ class _ScheduleInfoScreenState extends State<ScheduleInfoScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              FutureBuilder(
-                future: FirebaseFirestore.instance.collection('users').doc(widget.appointmentDetails['user_id']).get(),
+              StreamBuilder(
+                stream: FirebaseFirestore.instance.collection('users').doc(widget.appointmentDetails['user_id']).snapshots(),
                 builder: (ctx, snapshot) {
                   print(snapshot.data);
                   if (snapshot.hasError) {
@@ -112,13 +112,18 @@ class _ScheduleInfoScreenState extends State<ScheduleInfoScreen> {
                               ),
                             ),
                             onPressed: () {
-                              FirebaseFirestore.instance.collection('appointments').doc(widget.docId).delete()
-                              .then((_) => {
-                                Navigator.pop(context)
-                              });
+                              if (widget.appointmentDetails['isAppointmentStarted'] == false) {
+                                widget.appointmentDetails['isAppointmentStarted'] = true;
+                                FirebaseFirestore.instance.collection('appointments').doc(widget.docId).update({
+                                  'isAppointmentStarted': true
+                                });
+                              }
+                              else {
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Consulta já iniciada!")));
+                              }
                             },
                             child: Text(
-                              "Cancelar Consulta",
+                              "Iniciar Consulta",
                               style: Styles.normalBold.merge(
                                 TextStyle(color: ColorPalette.darkGreen),
                               ),
@@ -131,14 +136,21 @@ class _ScheduleInfoScreenState extends State<ScheduleInfoScreen> {
                           width: double.infinity,
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
+                              
                               backgroundColor: ColorPalette.darkGreen,
                               shape: const RoundedRectangleBorder(
                                 borderRadius: BorderRadius.all(Radius.circular(10)),
                               ),
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              widget.appointmentDetails['isAppointmentFinished'] = true;
+                              FirebaseFirestore.instance.collection('appointments').doc(widget.docId).update({
+                                'isAppointmentFinished': true
+                              });
+                              Navigator.pop(context);
+                            },
                             child: Text(
-                              "Editar Consulta",
+                              "Finalizar Consulta",
                               style: Styles.normalBold.merge(
                                 TextStyle(color: ColorPalette.white),
                               ),

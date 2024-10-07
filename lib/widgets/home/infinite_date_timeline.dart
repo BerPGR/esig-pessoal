@@ -60,7 +60,6 @@ class _InfiniteDateTimelineState extends State<InfiniteDateTimeline> {
 bool _isValidDate(DateTime date, {bool allowToday = false}) {
   DateTime today = DateTime.now();
   bool isAfterToday = allowToday ? !date.isBefore(today) : date.isAfter(today);
-  // Permite apenas segundas (1) e quartas (3)
   return isAfterToday && 
          (date.weekday == DateTime.monday || date.weekday == DateTime.wednesday);
 }
