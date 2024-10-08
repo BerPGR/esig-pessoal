@@ -1,11 +1,13 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:esigp/screens/schedule_info_screen.dart';
 import 'package:esigp/themes/app_colors.dart';
 import 'package:esigp/themes/app_text_styles.dart';
 import 'package:esigp/widgets/home/infinite_date_timeline.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -15,7 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  DateTime _focusDate = DateTime.now();
+  final DateTime _focusDate = DateTime.now();
     late String _selectedDate;
 
   @override
@@ -55,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final dayOfWeek = DateFormat.EEEE('pt_BR').format(dateTime);
 
-    return '${dayOfWeek[0].toUpperCase()+dayOfWeek.substring(1)}';
+    return dayOfWeek[0].toUpperCase()+dayOfWeek.substring(1);
   }
 
   String formatarDataAgendamento(String dataString) {
@@ -71,17 +73,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(_selectedDate); 
     return Scaffold(
       appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 20),
+        elevation: 0,
+        leading: const Padding(
+          padding: EdgeInsets.only(left: 20),
         ),
         actions: [
           IconButton(onPressed: () {}, icon: const Icon(Icons.notifications, color: Colors.black,)),
         ],
         backgroundColor: ColorPalette.white,
-        elevation: 1,
       ),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -121,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   if(snapshot.hasData) {
                     var documents = snapshot.data!.docs;
 
-                    if (documents.length == 0) {
+                    if (documents.isEmpty) {
                       return const Padding(
                         padding: EdgeInsets.only(top: 16.0),
                         child: Center(child: Text('Nenhum agendamento para esse dia')),
@@ -136,13 +137,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         InkWell(
                           splashColor: Colors.blueGrey[400],
                           onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => ScheduleInfoScreen(docId: docid, appointmentDetails: detail.data() as Map<String, dynamic>,)));
+                            Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => ScheduleInfoScreen(docId: docid, appointmentDetails: detail.data(),)));
                           },
                           child: SizedBox(
                             height: 94,
                             child: Card(
                               shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(20))
+                                borderRadius: BorderRadius.all(Radius.circular(10))
                               ),
                               elevation: 4,
                               child: Padding(
@@ -168,21 +169,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                               if (snapshot.connectionState == ConnectionState.waiting) {
                                                 return SizedBox(
                                                   width: MediaQuery.of(ctx).size.width * 0.5,
-                                                  child: LinearProgressIndicator()
+                                                  child: const LinearProgressIndicator()
                                                 ); // Mostra um indicador de carregamento enquanto o Future está pendente
 
                                               } else if (snapshot.hasError) {
-                                                return Text('Erro ao carregar o nome'); // Mostra uma mensagem de erro
+                                                return const Text('Erro ao carregar o nome'); // Mostra uma mensagem de erro
                                               } else if (snapshot.hasData) {
-                                                return Text(snapshot.data ?? '', style: Styles.normal.merge(TextStyle(fontSize: 16, fontWeight: FontWeight.w600))); // Exibe o nome do usuário
+                                                return Text(snapshot.data ?? '', style: Styles.normal.merge(const TextStyle(fontSize: 16, fontWeight: FontWeight.w600))); // Exibe o nome do usuário
                                               } else {
-                                                return Text('Nenhum dado disponível'); // Caso o Future não tenha dados
+                                                return const Text('Nenhum dado disponível'); // Caso o Future não tenha dados
                                               }
                                             },
                                           ),
-                                          Text(detail['hour'], style: Styles.normal.merge(TextStyle(fontSize: 10, fontWeight: FontWeight.w100))),
+                                          Text(detail['hour'], style: Styles.normal.merge(const TextStyle(fontSize: 10, fontWeight: FontWeight.w100))),
                                           const Spacer(),
-                                          Text("Agendamento", style: Styles.normal.merge(TextStyle(fontSize: 10, fontWeight: FontWeight.w300, color: Color(0xff797979))))
+                                          Text("Agendamento", style: Styles.normal.merge(const TextStyle(fontSize: 10, fontWeight: FontWeight.w300, color: Color(0xff797979))))
                                         ],
                                       ),
                                     )
@@ -202,7 +203,37 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   return const Text('Carregando...');
                 }
-              )
+              ),
+
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: SizedBox(
+                  height: 65,
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: ColorPalette.darkGreen,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                    ),
+                    onPressed: () {
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Ver agendamentos",
+                          style: Styles.normalBold.merge(
+                            const TextStyle(color: ColorPalette.white),
+                          ),
+                        ),
+                        const Icon(CupertinoIcons.arrow_right, color: ColorPalette.white,)
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ]
           ),
         ),

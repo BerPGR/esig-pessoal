@@ -21,7 +21,7 @@ class _ScheduleInfoScreenState extends State<ScheduleInfoScreen> {
     final formatter = DateFormat("dd/MM");
     final formattedDate = formatter.format(parsedDate);
 
-    return "${formattedDate} - ${hour}";
+    return "$formattedDate - $hour";
   }
 
   String formatSintomas(List doencas) {
@@ -64,13 +64,13 @@ class _ScheduleInfoScreenState extends State<ScheduleInfoScreen> {
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
-                                icon: Icon(CupertinoIcons.chevron_back)
+                                icon: const Icon(CupertinoIcons.chevron_back)
                               ),
-                              Text("Agendamento", style: Styles.normalBold,)
+                              const Text("Agendamento", style: Styles.normalBold,)
                             ],
                           )
                         ),
-                        Padding(padding: EdgeInsets.only(top: 16), child: Text(clientData['name'] ?? '', style: Styles.normalBold,),),
+                        Padding(padding: const EdgeInsets.only(top: 16), child: Text(clientData['name'] ?? '', style: Styles.normalBold,),),
                         Padding(
                           padding: const EdgeInsets.only(top: 8.0),
                           child: Text(formatDate(widget.appointmentDetails['date'], widget.appointmentDetails['hour'])),
@@ -80,7 +80,7 @@ class _ScheduleInfoScreenState extends State<ScheduleInfoScreen> {
                           child: Text("Sintomas/Doenças", style: Styles.normalBold,),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(top: 8),
+                          padding: const EdgeInsets.only(top: 8),
                           child: Text(
                             formatSintomas(widget.appointmentDetails['reason']),
                           ),
@@ -90,47 +90,48 @@ class _ScheduleInfoScreenState extends State<ScheduleInfoScreen> {
                           child: Text("Descrição", style: Styles.normalBold,),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(top: 8),
+                          padding: const EdgeInsets.only(top: 8),
                           child: Text(
                             (widget.appointmentDetails['description']),
                             textAlign: TextAlign.justify,
                           ),
                         ),
-                        SizedBox(height: 250,),
-                        SizedBox(
-                          height: 65,
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: ColorPalette.white,
-                              shape: const RoundedRectangleBorder(
-                                side: BorderSide(
-                                  color: ColorPalette.darkGreen,
-                                  width: 2
+                        const SizedBox(height: 250,),
+                        if (widget.appointmentDetails['isAppointmentStarted'] == false)
+                          SizedBox(
+                            height: 65,
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: ColorPalette.white,
+                                shape: const RoundedRectangleBorder(
+                                  side: BorderSide(
+                                    color: ColorPalette.darkGreen,
+                                    width: 2
+                                  ),
+                                  borderRadius: BorderRadius.all(Radius.circular(10)),
                                 ),
-                                borderRadius: BorderRadius.all(Radius.circular(10)),
                               ),
-                            ),
-                            onPressed: () {
-                              if (widget.appointmentDetails['isAppointmentStarted'] == false) {
-                                widget.appointmentDetails['isAppointmentStarted'] = true;
-                                FirebaseFirestore.instance.collection('appointments').doc(widget.docId).update({
-                                  'isAppointmentStarted': true
-                                });
-                              }
-                              else {
-                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Consulta já iniciada!")));
-                              }
-                            },
-                            child: Text(
-                              "Iniciar Consulta",
-                              style: Styles.normalBold.merge(
-                                TextStyle(color: ColorPalette.darkGreen),
+                              onPressed: () {
+                                if (widget.appointmentDetails['isAppointmentStarted'] == false) {
+                                  widget.appointmentDetails['isAppointmentStarted'] = true;
+                                  FirebaseFirestore.instance.collection('appointments').doc(widget.docId).update({
+                                    'isAppointmentStarted': true
+                                  });
+                                }
+                                else {
+                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Consulta já iniciada!")));
+                                }
+                              },
+                              child: Text(
+                                "Iniciar Consulta",
+                                style: Styles.normalBold.merge(
+                                  const TextStyle(color: ColorPalette.darkGreen),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 12,),
+                        const SizedBox(height: 12,),
                         SizedBox(
                           height: 65,
                           width: double.infinity,
@@ -152,7 +153,7 @@ class _ScheduleInfoScreenState extends State<ScheduleInfoScreen> {
                             child: Text(
                               "Finalizar Consulta",
                               style: Styles.normalBold.merge(
-                                TextStyle(color: ColorPalette.white),
+                                const TextStyle(color: ColorPalette.white),
                               ),
                             ),
                           ),
@@ -160,7 +161,7 @@ class _ScheduleInfoScreenState extends State<ScheduleInfoScreen> {
                       ]
                     );
                   }
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
               )
             ],

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class InfiniteDateTimeline extends StatefulWidget { 
   final Function(String) onDateSelected;
 
-  InfiniteDateTimeline({super.key, required this.onDateSelected});
+  const InfiniteDateTimeline({super.key, required this.onDateSelected});
 
   @override
   _InfiniteDateTimelineState createState() => _InfiniteDateTimelineState();
@@ -43,7 +43,7 @@ class _InfiniteDateTimelineState extends State<InfiniteDateTimeline> {
       _isLoading = true;
     });
 
-    Future.delayed(Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 2), () {
       DateTime lastDate = _dates.isNotEmpty ? _dates.last : DateTime.now();
       for (int i = 1; i <= 10; i++) {
         DateTime dateToAdd = lastDate.add(Duration(days: i));
@@ -78,7 +78,7 @@ bool _isValidDate(DateTime date, {bool allowToday = false}) {
         itemCount: _dates.length + (_isLoading ? 1 : 0),
         itemBuilder: (context, index) {
           if (index == _dates.length) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
           DateTime date = _dates[index];
           String monthName = _getMonthName(date.month);
@@ -96,11 +96,11 @@ bool _isValidDate(DateTime date, {bool allowToday = false}) {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(monthName, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    Text(monthName, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 8),
-                    Text(date.day.toString(), style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                    Text(date.day.toString(), style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 8),
-                    Text(dayOfWeek, style: TextStyle(fontSize: 14)),
+                    Text(dayOfWeek, style: const TextStyle(fontSize: 14)),
                   ],
                 ),
               ),
